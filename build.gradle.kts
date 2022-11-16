@@ -17,7 +17,7 @@ plugins {
 group = "dev.nyon"
 val majorVersion = "1.0.0"
 version = "$majorVersion-1.19.2"
-description = "Adds an useful information to your ingame hud"
+description = "Adds useful information to your ingame hud"
 val authors = listOf("btwonion")
 val githubRepo = "btwonion/moredetails"
 
