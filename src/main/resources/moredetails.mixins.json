@@ -6,5 +6,9 @@
   "mixins": [],
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "client": [
+    "GUIMixin",
+    "MinecraftAccessor"
+  ]
 }

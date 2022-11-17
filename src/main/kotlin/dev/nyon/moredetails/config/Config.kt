@@ -1,5 +1,7 @@
 package dev.nyon.moredetails.config
 
+import dev.nyon.moredetails.components.DetailComponent
+import dev.nyon.moredetails.components.FPSComponent
 import dev.nyon.moredetails.json
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
@@ -13,11 +15,11 @@ import kotlin.io.path.writeText
 
 @Serializable
 data class Config(
-    val components: List<DetailComponent<*>>
+    val components: List<DetailComponent>
 )
 
-var config = Config(listOf())
-private val path = FabricLoader.getInstance().configDir.toAbsolutePath().resolve("moredetails.toml")
+var config = Config(listOf(FPSComponent()))
+private val path = FabricLoader.getInstance().configDir.toAbsolutePath().resolve("moredetails.json")
     .also { if (!it.exists()) it.createFile() }
 
 fun saveConfig() = path.writeText(json.encodeToString(config))
