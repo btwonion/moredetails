@@ -16,7 +16,7 @@ plugins {
 
 group = "dev.nyon"
 val majorVersion = "1.0.0"
-version = "$majorVersion-1.19.2"
+version = "$majorVersion-1.19.2-alpha2"
 description = "Adds useful information to your ingame hud"
 val authors = listOf("btwonion")
 val githubRepo = "btwonion/moredetails"
@@ -74,7 +74,7 @@ tasks {
         dependsOn("modrinth")
         dependsOn("modrinthSyncBody")
         dependsOn("githubRelease")
-        dependsOn("publish")
+        //dependsOn("publish")
     }
 
     withType<KotlinCompile> {
@@ -93,7 +93,7 @@ modrinth {
     token.set(findProperty("modrinth.token")?.toString())
     projectId.set("eWxWZCSi")
     versionNumber.set("${project.version}")
-    versionType.set("release")
+    versionType.set("alpha")
     uploadFile.set(tasks["remapJar"])
     gameVersions.set(listOf("1.19.2"))
     loaders.set(listOf("fabric", "quilt"))
