@@ -1,8 +1,6 @@
 package dev.nyon.moredetails.config
 
-import dev.nyon.moredetails.components.CoordinatesComponent
-import dev.nyon.moredetails.components.DetailComponent
-import dev.nyon.moredetails.components.FPSComponent
+import dev.nyon.moredetails.components.*
 import dev.nyon.moredetails.json
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
@@ -19,7 +17,11 @@ data class Config(
     val components: List<DetailComponent>
 )
 
-var config = Config(listOf(FPSComponent(), CoordinatesComponent()))
+var config = Config(
+    listOf(
+        FPSComponent(), PlayerCoordinatesComponent(), PlayerChunkCoordinatesComponent(), ChunkCoordinatesComponent()
+    )
+)
 private val path = FabricLoader.getInstance().configDir.toAbsolutePath().resolve("moredetails.json")
     .also { if (!it.exists()) it.createFile() }
 

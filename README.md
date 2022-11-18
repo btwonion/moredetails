@@ -12,6 +12,8 @@ hardly changes the game experience.
  - FPS
  - Coordinates
    - Player
+   - Player in chunk
+   - Chunk
 
 ## Planned:
 - Coordinates overlay (player, chunk coords, in-chunk coords)
