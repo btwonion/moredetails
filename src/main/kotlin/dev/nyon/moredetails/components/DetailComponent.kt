@@ -19,4 +19,17 @@ sealed interface DetailComponent {
 
     fun register()
     fun remove()
+
+
+    @Serializable
+    sealed interface CoordinatesComponent : DetailComponent {
+        var prefix: String
+        var xColor: Int
+        var xPrefix: String
+        var yColor: Int
+        var yPrefix: String
+        var zColor: Int
+        var zPrefix: String
+        var decimalPlaces: Int
+    }
 }
