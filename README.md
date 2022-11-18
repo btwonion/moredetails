@@ -14,9 +14,9 @@ hardly changes the game experience.
    - Player
    - Player in chunk
    - Chunk
+- Biomes
 
 ## Planned:
-- Biome overlay
 - Direction overlay
 - Lighting overlay
 - Time overlay
