@@ -10,7 +10,7 @@ import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.Style
 
 @Serializable
-class CoordinatesOverlay(
+class CoordinatesComponent(
     override var x: Int = 0,
     override var y: Int = 50,
     override var enabled: Boolean = true,
