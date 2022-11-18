@@ -15,7 +15,7 @@ import net.minecraft.world.level.ChunkPos
 class PlayerCoordinatesComponent(
     override var x: Int = 0,
     override var y: Int = 50,
-    override var enabled: Boolean = true,
+    override var enabled: Boolean = false,
     override var color: Int = 0xA4A7FF,
     override var background: Boolean = false,
     override var backgroundColor: Int = 0x37364C,
@@ -54,7 +54,7 @@ class PlayerCoordinatesComponent(
 class PlayerChunkCoordinatesComponent(
     override var x: Int = 0,
     override var y: Int = 70,
-    override var enabled: Boolean = true,
+    override var enabled: Boolean = false,
     override var color: Int = 0xA4A7FF,
     override var background: Boolean = false,
     override var backgroundColor: Int = 0x37364C,
@@ -97,7 +97,7 @@ class PlayerChunkCoordinatesComponent(
 class ChunkCoordinatesComponent(
     override var x: Int = 0,
     override var y: Int = 90,
-    override var enabled: Boolean = true,
+    override var enabled: Boolean = false,
     override var color: Int = 0xA4A7FF,
     override var background: Boolean = false,
     override var backgroundColor: Int = 0x37364C,
