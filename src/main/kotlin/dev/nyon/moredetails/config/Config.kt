@@ -19,7 +19,11 @@ data class Config(
 
 var config = Config(
     listOf(
-        FPSComponent(), PlayerCoordinatesComponent(), PlayerChunkCoordinatesComponent(), ChunkCoordinatesComponent()
+        FPSComponent(),
+        PlayerCoordinatesComponent(),
+        PlayerChunkCoordinatesComponent(),
+        ChunkCoordinatesComponent(),
+        BiomeComponent()
     )
 )
 private val path = FabricLoader.getInstance().configDir.toAbsolutePath().resolve("moredetails.json")
