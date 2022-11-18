@@ -7,8 +7,14 @@ hardly changes the game experience.
 
 ⚠️ This mod is in an early stage of development
 <br>
+
+## Current information 
+ - FPS
+ - Coordinates
+   - Player
+
 ## Planned:
-- Coordinates overlay (world, chunk)
+- Coordinates overlay (player, chunk coords, in-chunk coords)
 - Biome overlay
 - Direction overlay
 - Lighting overlay
