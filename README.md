@@ -16,7 +16,6 @@ hardly changes the game experience.
    - Chunk
 
 ## Planned:
-- Coordinates overlay (player, chunk coords, in-chunk coords)
 - Biome overlay
 - Direction overlay
 - Lighting overlay
