@@ -2,6 +2,7 @@ package dev.nyon.moredetails.components
 
 import com.mojang.blaze3d.vertex.PoseStack
 import kotlinx.serialization.Serializable
+import net.minecraft.client.gui.GuiComponent
 
 @Serializable
 sealed interface DetailComponent {
@@ -31,5 +32,9 @@ sealed interface DetailComponent {
         var zColor: Int
         var zPrefix: String
         var decimalPlaces: Int
+    }
+
+    fun renderBackground(poseStack: PoseStack) {
+        if (background) GuiComponent.fill(poseStack, x, y, x + width, y + height, backgroundColor)
     }
 }

@@ -31,9 +31,7 @@ class FPSComponent(
 
     override fun register() {
         widget = Widget { poseStack, _, _, _ ->
-            GuiComponent.fill(
-                poseStack, x, y, x + width, y + height, backgroundColor
-            )
+            renderBackground(poseStack)
             GuiComponent.drawString(
                 poseStack,
                 Minecraft.getInstance().font,

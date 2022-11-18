@@ -156,7 +156,7 @@ fun DetailComponent.CoordinatesComponent.coordinatesWidget(coordinatesResolver: 
                 )
             )
         }
-        GuiComponent.fill(poseStack, x, y, x + width, y + height, backgroundColor)
+        renderBackground(poseStack)
         GuiComponent.drawString(
             poseStack, minecraft.font, component, x, y, color
         )
