@@ -6,6 +6,7 @@ This mod aims to provide all the information you need on your ingame hud. The fa
 hardly changes the game experience.
 
 ⚠️ This mod is in an early stage of development
+<br>It's currently only configurable via  the config file. Every change requires a restart -> Will be fixed soon!
 <br>
 
 ## Current information 
