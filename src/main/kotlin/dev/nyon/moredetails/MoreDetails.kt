@@ -10,7 +10,6 @@ val json = Json {
 }
 
 object MoreDetails {
-
     fun init() {
         loadConfig()
 

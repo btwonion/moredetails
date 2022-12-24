@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiComponent
-import net.minecraft.client.gui.components.Widget
+import net.minecraft.client.gui.components.Renderable
 import net.minecraft.network.chat.Component
 
 @Serializable
@@ -19,26 +19,25 @@ class FPSComponent(
     override var background: Boolean = false,
     override var height: Int = 10,
     override var width: Int = 30,
-    var prefix: String = "FPS: "
+    var format: String = "FPS: %fps%"
 ) : DetailComponent {
 
     @Transient
-    private var widget: Widget? = null
+    private var widget: Renderable? = null
 
     override fun update(poseStack: PoseStack) {
         widget?.render(poseStack, 0, 0, 0F)
     }
 
     override fun register() {
-        widget = Widget { poseStack, _, _, _ ->
+        widget = Renderable { poseStack, _, _, _ ->
             renderBackground(poseStack)
             GuiComponent.drawString(
-                poseStack,
-                Minecraft.getInstance().font,
-                Component.literal("$prefix${(Minecraft.getInstance() as MinecraftAccessor).frames}"),
-                x,
-                y,
-                color
+                poseStack, Minecraft.getInstance().font, Component.literal(
+                    format.replace(
+                        "%fps%", (Minecraft.getInstance() as MinecraftAccessor).frames.toString()
+                    )
+                ), x, y, color
             )
         }
     }

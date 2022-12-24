@@ -5,10 +5,9 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiComponent
-import net.minecraft.client.gui.components.Widget
+import net.minecraft.client.gui.components.Renderable
 import net.minecraft.core.SectionPos
 import net.minecraft.network.chat.Component
-import net.minecraft.network.chat.Style
 import net.minecraft.world.level.ChunkPos
 
 @Serializable
@@ -21,18 +20,12 @@ class PlayerCoordinatesComponent(
     override var backgroundColor: Int = 0x37364C,
     override var height: Int = 10,
     override var width: Int = 50,
-    override var prefix: String = "XYZ: ",
-    override var xColor: Int = color,
-    override var xPrefix: String = " ",
-    override var yColor: Int = color,
-    override var yPrefix: String = " ",
-    override var zColor: Int = color,
-    override var zPrefix: String = " ",
+    override var format: String = "XYZ: %x% %y% %z%",
     override var decimalPlaces: Int = 1
 ) : DetailComponent.CoordinatesComponent {
 
     @Transient
-    private var widget: Widget? = null
+    private var widget: Renderable? = null
 
     override fun update(poseStack: PoseStack) {
         widget?.render(poseStack, 0, 0, 0F)
@@ -60,18 +53,12 @@ class PlayerChunkCoordinatesComponent(
     override var backgroundColor: Int = 0x37364C,
     override var height: Int = 10,
     override var width: Int = 50,
-    override var prefix: String = "Chunk XYZ: ",
-    override var xColor: Int = color,
-    override var xPrefix: String = " ",
-    override var yColor: Int = color,
-    override var yPrefix: String = " ",
-    override var zColor: Int = color,
-    override var zPrefix: String = " ",
+    override var format: String = "Chunk XYZ: %x% %y% %z%",
     override var decimalPlaces: Int = 1
 ) : DetailComponent.CoordinatesComponent {
 
     @Transient
-    private var widget: Widget? = null
+    private var widget: Renderable? = null
 
     override fun update(poseStack: PoseStack) {
         widget?.render(poseStack, 0, 0, 0F)
@@ -103,18 +90,12 @@ class ChunkCoordinatesComponent(
     override var backgroundColor: Int = 0x37364C,
     override var height: Int = 10,
     override var width: Int = 50,
-    override var prefix: String = "Chunk: ",
-    override var xColor: Int = color,
-    override var xPrefix: String = " ",
-    override var yColor: Int = color,
-    override var yPrefix: String = " ",
-    override var zColor: Int = color,
-    override var zPrefix: String = " ",
+    override var format: String = "Chunk: %x% %z%",
     override var decimalPlaces: Int = 1
 ) : DetailComponent.CoordinatesComponent {
 
     @Transient
-    private var widget: Widget? = null
+    private var widget: Renderable? = null
 
     override fun update(poseStack: PoseStack) {
         widget?.render(poseStack, 0, 0, 0F)
@@ -136,28 +117,19 @@ class ChunkCoordinatesComponent(
     }
 }
 
-fun DetailComponent.CoordinatesComponent.coordinatesWidget(coordinatesResolver: () -> Triple<Double, Double, Double>): Widget =
-    Widget { poseStack, _, _, _ ->
+fun DetailComponent.CoordinatesComponent.coordinatesWidget(coordinatesResolver: () -> Triple<Double, Double, Double>): Renderable =
+    Renderable { poseStack, _, _, _ ->
+        fun Double.formatToInt(): String =
+            if (this == this.toInt().toDouble()) this.toInt().toString() else "%.${decimalPlaces}f".format(this)
+
         val minecraft = Minecraft.getInstance()
-        val component = Component.literal(prefix)
-        val coordinates = coordinatesResolver()
-        listOf(
-            Triple(coordinates.first, xPrefix, xColor),
-            Triple(coordinates.second, yPrefix, yColor),
-            Triple(coordinates.third, zPrefix, zColor)
-        ).forEach {
-            component.append(it.second).append(
-                Component.literal(
-                    if (it.first == it.first.toInt().toDouble()) it.first.toInt().toString() else "%.${decimalPlaces}f".format(
-                        it.first
-                    )
-                ).withStyle(
-                    Style.EMPTY.withColor(it.third)
-                )
+        val (playerX, playerY, playerZ) = coordinatesResolver()
+        val component = Component.literal(
+            format.replace("%x%", playerX.formatToInt()).replace(
+                "%y%", playerY.formatToInt().replace("%z%", playerZ.formatToInt())
             )
-        }
-        renderBackground(poseStack)
-        GuiComponent.drawString(
-            poseStack, minecraft.font, component, x, y, color
         )
+
+        renderBackground(poseStack)
+        GuiComponent.drawString(poseStack, minecraft.font, component, x, y, color)
     }

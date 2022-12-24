@@ -6,7 +6,6 @@ import net.minecraft.client.gui.GuiComponent
 
 @Serializable
 sealed interface DetailComponent {
-
     var enabled: Boolean
     var x: Int
     var y: Int
@@ -24,13 +23,7 @@ sealed interface DetailComponent {
 
     @Serializable
     sealed interface CoordinatesComponent : DetailComponent {
-        var prefix: String
-        var xColor: Int
-        var xPrefix: String
-        var yColor: Int
-        var yPrefix: String
-        var zColor: Int
-        var zPrefix: String
+        var format: String
         var decimalPlaces: Int
     }
 

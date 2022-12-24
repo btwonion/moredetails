@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiComponent
-import net.minecraft.client.gui.components.Widget
+import net.minecraft.client.gui.components.Renderable
 import net.minecraft.core.Holder
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.Style
@@ -27,13 +27,13 @@ class BiomeComponent(
 ) : DetailComponent {
 
     @Transient
-    private var widget: Widget? = null
+    private var widget: Renderable? = null
     override fun update(poseStack: PoseStack) {
         widget?.render(poseStack, 0, 0, 0F)
     }
 
     override fun register() {
-        widget = Widget { poseStack, _, _, _ ->
+        widget = Renderable { poseStack, _, _, _ ->
             val minecraft = Minecraft.getInstance()
             val biome = minecraft.player!!.level.getBiome(minecraft.player!!.blockPosition())
             renderBackground(poseStack)
