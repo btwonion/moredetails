@@ -86,8 +86,6 @@ tasks {
         options.release.set(17)
     }
 }
-val changelogText =
-    file("changelogs/$majorVersion.md").takeIf { it.exists() }?.readText() ?: "No changelog provided."
 
 modrinth {
     token.set(findProperty("modrinth.token")?.toString())
@@ -101,7 +99,6 @@ modrinth {
         required.project("fabric-api")
         required.project("fabric-language-kotlin")
     }
-    changelog.set(changelogText)
     syncBodyFrom.set(file("README.md").readText())
 }
 
@@ -112,7 +109,6 @@ githubRelease {
     owner(split[0])
     repo(split[1])
     tagName("v${project.version}")
-    body(changelogText)
     releaseAssets(tasks["remapJar"].outputs.files)
     targetCommitish("master")
 }
