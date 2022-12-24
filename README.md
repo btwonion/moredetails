@@ -16,12 +16,10 @@ hardly changes the game experience.
    - Player in chunk
    - Chunk
 - Biomes
+- Time overlay
 
 ## Planned:
 - Direction overlay
-- Lighting overlay
-- Time overlay
-- ingame time overlay
 
 ### Other
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/I3I8F1WX4)

@@ -23,7 +23,8 @@ var config = Config(
         PlayerCoordinatesComponent(),
         PlayerChunkCoordinatesComponent(),
         ChunkCoordinatesComponent(),
-        BiomeComponent()
+        BiomeComponent(),
+        TimeComponent()
     )
 )
 private val path = FabricLoader.getInstance().configDir.toAbsolutePath().resolve("moredetails.json")
