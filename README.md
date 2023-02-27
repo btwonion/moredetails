@@ -5,7 +5,7 @@
 This mod aims to provide all the information you need on your ingame hud. The fact that the mod is highly customizable
 hardly changes the game experience.
 
-⚠️ This mod is in an early stage of development (paused in favor of [Headquarters](https://github.com/btwonion/headquarters) and [ichor](https://github.com/kxmpxtxnt/ichor))
+⚠️ This mod is in an early stage of development (paused in favor of [headquarters](https://github.com/btwonion/headquarters) and [ichor](https://github.com/kxmpxtxnt/ichor))
 <br>It's currently only configurable via the config file. Every change requires a restart -> Will be fixed soon!
 <br>
 
