@@ -30,6 +30,12 @@
         "adapter": "kotlin",
         "value": "dev.nyon.moredetails.MainKt::init"
       }
+    ],
+    "modmenu": [
+      {
+        "adapter": "kotlin",
+        "value": "dev.nyon.moredetails.config.ModMenuImpl"
+      }
     ]
   },
   "mixins": [
