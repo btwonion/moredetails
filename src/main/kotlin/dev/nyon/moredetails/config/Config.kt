@@ -2,6 +2,7 @@ package dev.nyon.moredetails.config
 
 import dev.nyon.moredetails.components.*
 import dev.nyon.moredetails.json
+import dev.nyon.moredetails.util.BiomeColors
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
@@ -14,18 +15,19 @@ import kotlin.io.path.writeText
 
 @Serializable
 data class Config(
-    val components: List<DetailComponent>
+    val components: MutableList<DetailComponent>,
+    val biomeColors: BiomeColors
 )
 
 var config = Config(
-    listOf(
+    mutableListOf(
         FPSComponent(),
         PlayerCoordinatesComponent(),
         PlayerChunkCoordinatesComponent(),
         ChunkCoordinatesComponent(),
         BiomeComponent(),
         TimeComponent()
-    )
+    ), BiomeColors()
 )
 private val path = FabricLoader.getInstance().configDir.toAbsolutePath().resolve("moredetails.json")
     .also { if (!it.exists()) it.createFile() }

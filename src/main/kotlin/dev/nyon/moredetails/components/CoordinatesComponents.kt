@@ -1,6 +1,7 @@
 package dev.nyon.moredetails.components
 
 import com.mojang.blaze3d.vertex.PoseStack
+import dev.isxander.yacl.api.OptionGroup
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import net.minecraft.client.Minecraft
@@ -12,6 +13,7 @@ import net.minecraft.world.level.ChunkPos
 
 @Serializable
 class PlayerCoordinatesComponent(
+    override var name: String = "Player Coordinates Component",
     override var x: Int = 0,
     override var y: Int = 50,
     override var enabled: Boolean = false,
@@ -21,7 +23,12 @@ class PlayerCoordinatesComponent(
     override var height: Int = 10,
     override var width: Int = 50,
     override var format: String = "XYZ: %x% %y% %z%",
-    override var decimalPlaces: Int = 1
+    override var decimalPlaces: Int = 1,
+    override val placeholders: Map<String, String> = mapOf(
+        "%x%" to "the x coordinate you are at",
+        "%y%" to "the y coordinate you are at",
+        "%z%" to "the z coordinate you are at"
+    )
 ) : DetailComponent.CoordinatesComponent {
 
     @Transient
@@ -41,10 +48,19 @@ class PlayerCoordinatesComponent(
     override fun remove() {
         widget = null
     }
+
+    override fun createYACLGroup(group: OptionGroup.Builder): OptionGroup {
+        group.collapsed(true)
+        group.name(Component.literal(name))
+        group.tooltip(Component.literal("Configure the PlayerCoordinateComponent '$name'"))
+        group.createDefaultOptions()
+        return group.build()
+    }
 }
 
 @Serializable
 class PlayerChunkCoordinatesComponent(
+    override var name: String = "Player Chunk Coordinates Component",
     override var x: Int = 0,
     override var y: Int = 70,
     override var enabled: Boolean = false,
@@ -54,7 +70,12 @@ class PlayerChunkCoordinatesComponent(
     override var height: Int = 10,
     override var width: Int = 50,
     override var format: String = "Chunk XYZ: %x% %y% %z%",
-    override var decimalPlaces: Int = 1
+    override var decimalPlaces: Int = 1,
+    override val placeholders: Map<String, String> = mapOf(
+        "%x%" to "the x coordinate of you in your chunk",
+        "%y%" to "the y coordinate of you in your chunk",
+        "%z%" to "the z coordinate of you in your chunk"
+    )
 ) : DetailComponent.CoordinatesComponent {
 
     @Transient
@@ -78,10 +99,19 @@ class PlayerChunkCoordinatesComponent(
     override fun remove() {
         widget = null
     }
+
+    override fun createYACLGroup(group: OptionGroup.Builder): OptionGroup {
+        group.collapsed(true)
+        group.name(Component.literal(name))
+        group.tooltip(Component.literal("Configure the PlayerChunkCoordinatesComponent '$name'"))
+        group.createDefaultOptions()
+        return group.build()
+    }
 }
 
 @Serializable
 class ChunkCoordinatesComponent(
+    override var name: String = "Chunk Coordinates Component",
     override var x: Int = 0,
     override var y: Int = 90,
     override var enabled: Boolean = false,
@@ -91,7 +121,10 @@ class ChunkCoordinatesComponent(
     override var height: Int = 10,
     override var width: Int = 50,
     override var format: String = "Chunk: %x% %z%",
-    override var decimalPlaces: Int = 1
+    override var decimalPlaces: Int = 1, override val placeholders: Map<String, String> = mapOf(
+        "%x%" to "the x coordinate of the chunk you are at",
+        "%z%" to "the z coordinate of the chunk you are at"
+    )
 ) : DetailComponent.CoordinatesComponent {
 
     @Transient
@@ -114,6 +147,14 @@ class ChunkCoordinatesComponent(
 
     override fun remove() {
         widget = null
+    }
+
+    override fun createYACLGroup(group: OptionGroup.Builder): OptionGroup {
+        group.collapsed(true)
+        group.name(Component.literal(name))
+        group.tooltip(Component.literal("Configure the ChunkCoordinatesComponent '$name'"))
+        group.createDefaultOptions()
+        return group.build()
     }
 }
 

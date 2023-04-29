@@ -1,6 +1,7 @@
 package dev.nyon.moredetails.components
 
 import com.mojang.blaze3d.vertex.PoseStack
+import dev.isxander.yacl.api.OptionGroup
 import dev.nyon.moredetails.mixins.MinecraftAccessor
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -11,6 +12,7 @@ import net.minecraft.network.chat.Component
 
 @Serializable
 class FPSComponent(
+    override var name: String = "FPS Component",
     override var enabled: Boolean = false,
     override var x: Int = 0,
     override var y: Int = 0,
@@ -19,7 +21,8 @@ class FPSComponent(
     override var background: Boolean = false,
     override var height: Int = 10,
     override var width: Int = 30,
-    var format: String = "FPS: %fps%"
+    override var format: String = "FPS: %fps%",
+    override val placeholders: Map<String, String> = mapOf("%fps%" to "the fps you have at the moment")
 ) : DetailComponent {
 
     @Transient
@@ -45,5 +48,13 @@ class FPSComponent(
     override fun remove() {
         widget = null
         enabled = false
+    }
+
+    override fun createYACLGroup(group: OptionGroup.Builder): OptionGroup {
+        group.collapsed(true)
+        group.name(Component.literal(name))
+        group.tooltip(Component.literal("Configure the FPSComponent '$name'"))
+        group.createDefaultOptions()
+        return group.build()
     }
 }
