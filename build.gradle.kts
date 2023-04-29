@@ -2,13 +2,12 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.7.22"
-    kotlin("plugin.serialization") version "1.7.22"
-    id("fabric-loom") version "1.0-SNAPSHOT"
+    kotlin("jvm") version "1.8.21"
+    kotlin("plugin.serialization") version "1.8.21"
+    id("fabric-loom") version "1.2-SNAPSHOT"
     id("io.github.juuxel.loom-quiltflower") version "1.8.0"
-    id("org.quiltmc.quilt-mappings-on-loom") version "4.2.3"
 
-    id("com.modrinth.minotaur") version "2.5.0"
+    id("com.modrinth.minotaur") version "2.7.5"
     id("com.github.breadmoirai.github-release") version "2.4.1"
     `maven-publish`
     signing
@@ -16,52 +15,51 @@ plugins {
 
 group = "dev.nyon"
 val majorVersion = "1.0.0"
-version = "$majorVersion-1.19.3-alpha5"
+val mcVersion = "1.19.4"
+version = "$majorVersion-$mcVersion"
 description = "Adds useful information to your ingame hud"
 val authors = listOf("btwonion")
 val githubRepo = "btwonion/moredetails"
 
 repositories {
     mavenCentral()
+    maven("https://maven.terraformersmc.com")
+    maven("https://maven.parchmentmc.org")
+    maven("https://maven.isxander.dev/releases")
 }
 
 dependencies {
-    minecraft("com.mojang:minecraft:1.19.3")
+    minecraft("com.mojang:minecraft:$mcVersion")
     mappings(loom.layered {
-        //addLayer(quiltMappings.mappings("org.quiltmc:quilt-mappings:1.19.3+build.8:v2"))
+        parchment("org.parchmentmc.data:parchment-1.19.3:2023.03.12@zip")
         officialMojangMappings()
     })
-    modImplementation("net.fabricmc:fabric-loader:0.14.12")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:0.70.0+1.19.3")
-    modImplementation("net.fabricmc:fabric-language-kotlin:1.8.7+kotlin.1.7.22")
-
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1")
-    /*
-    removed until ktoml support arrays
-
-    include("com.akuleshov7:ktoml-core-jvm:0.3.0")
-    implementation("com.akuleshov7:ktoml-core-jvm:0.3.0")
-     */
+    modImplementation("net.fabricmc:fabric-loader:0.14.19")
+    modImplementation("net.fabricmc:fabric-language-kotlin:1.9.4+kotlin.1.8.21")
+    modImplementation("dev.isxander.yacl:yet-another-config-lib-fabric:2.5.0+1.19.4")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+    modApi("com.terraformersmc:modmenu:6.2.0")
 }
 
 tasks {
     processResources {
         val modId = "moredetails"
-        val modName = "moredetails"
+        val modName = modId
+        val modDescription = "Adds useful information to your ingame hud"
 
         inputs.property("id", modId)
         inputs.property("group", project.group)
         inputs.property("name", modName)
-        inputs.property("description", description)
+        inputs.property("description", modDescription)
         inputs.property("version", project.version)
         inputs.property("github", githubRepo)
 
-        filesMatching(listOf("fabric.mod.json", "quilt.mod.json")) {
+        filesMatching("fabric.mod.json") {
             expand(
                 "id" to modId,
                 "group" to project.group,
                 "name" to modName,
-                "description" to description,
+                "description" to modDescription,
                 "version" to project.version,
                 "github" to githubRepo,
             )
@@ -71,34 +69,28 @@ tasks {
     register("releaseMod") {
         group = "publishing"
 
-        dependsOn("modrinth")
         dependsOn("modrinthSyncBody")
+        dependsOn("modrinth")
         dependsOn("githubRelease")
-        //dependsOn("publish")
-    }
-
-    withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "17"
-        kotlinOptions.freeCompilerArgs += "-Xskip-prerelease-check"
-    }
-
-    withType<JavaCompile> {
-        options.release.set(17)
+        dependsOn("publish")
     }
 }
+val changelogText =
+    file("changelogs/$majorVersion.md").takeIf { it.exists() }?.readText() ?: "No changelog provided."
 
 modrinth {
     token.set(findProperty("modrinth.token")?.toString())
-    projectId.set("eWxWZCSi")
-    versionNumber.set("${project.version}")
-    versionType.set("alpha")
+    projectId.set("lg17V3i3")
+    versionNumber.set(project.version.toString())
+    versionType.set("release")
     uploadFile.set(tasks["remapJar"])
-    gameVersions.set(listOf("1.19.3"))
+    gameVersions.set(listOf(mcVersion))
     loaders.set(listOf("fabric", "quilt"))
     dependencies {
-        required.project("fabric-api")
         required.project("fabric-language-kotlin")
+        optional.project("modmenu")
     }
+    changelog.set(changelogText)
     syncBodyFrom.set(file("README.md").readText())
 }
 
@@ -109,62 +101,37 @@ githubRelease {
     owner(split[0])
     repo(split[1])
     tagName("v${project.version}")
+    body(changelogText)
+    overwrite(true)
     releaseAssets(tasks["remapJar"].outputs.files)
-    targetCommitish("master")
+    targetCommitish("main")
+}
+
+tasks.withType<KotlinCompile> {
+    kotlinOptions.jvmTarget = "17"
 }
 
 publishing {
     repositories {
         maven {
-            name = "ossrh"
+            name = "nyon"
+            url = uri("https://repo.nyon.dev/releases")
             credentials(PasswordCredentials::class)
-            setUrl("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2")
-        }
-    }
-
-    publications {
-        register<MavenPublication>(project.name) {
-            from(components["java"])
-
-            this.groupId = project.group.toString()
-            this.artifactId = project.name
-            this.version = rootProject.version.toString()
-
-            pom {
-                name.set(project.name)
-                description.set(project.description)
-
-                developers {
-                    authors.forEach {
-                        developer {
-                            name.set(it)
-                        }
-                    }
-                }
-
-                licenses {
-                    license {
-                        name.set("GNU General Public License 3")
-                        url.set("https://www.gnu.org/licenses/gpl-3.0.txt")
-                    }
-                }
-
-                url.set("https://github.com/${githubRepo}")
-
-                scm {
-                    connection.set("scm:git:git://github.com/${githubRepo}.git")
-                    url.set("https://github.com/${githubRepo}/tree/main")
-                }
+            authentication {
+                create<BasicAuthentication>("basic")
             }
         }
     }
-}
-
-signing {
-    sign(publishing.publications)
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = "dev.nyon"
+            artifactId = "moredetails"
+            version = project.version.toString()
+            from(components["java"])
+        }
+    }
 }
 
 java {
     withSourcesJar()
-    withJavadocJar()
 }
