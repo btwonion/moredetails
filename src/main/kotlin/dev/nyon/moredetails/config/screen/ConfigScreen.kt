@@ -12,7 +12,12 @@ fun generateConfigScreen(parent: Screen?): Screen {
     val configScreenBuilder = YetAnotherConfigLib.createBuilder()
     configScreenBuilder.title(Component.literal("moredetails"))
     configScreenBuilder.appendComponentsCategory()
-    configScreenBuilder.save { saveConfig() }
+    configScreenBuilder.save {
+        config.components.forEach {
+            if (it.enabled) it.register() else it.remove()
+        }
+        saveConfig()
+    }
     val configScreen = configScreenBuilder.build()
     return configScreen.generateScreen(parent)
 }
