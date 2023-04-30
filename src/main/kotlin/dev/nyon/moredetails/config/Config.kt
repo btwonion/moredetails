@@ -16,6 +16,7 @@ import kotlin.io.path.writeText
 @Serializable
 data class Config(
     val components: MutableList<DetailComponent>,
+    var textShadow: Boolean,
     val biomeColors: BiomeColors
 )
 
@@ -27,7 +28,7 @@ var config = Config(
         ChunkCoordinatesComponent(),
         BiomeComponent(),
         TimeComponent()
-    ), BiomeColors()
+    ), false, BiomeColors()
 )
 private val path = FabricLoader.getInstance().configDir.toAbsolutePath().resolve("moredetails.json")
     .also { if (!it.exists()) it.createFile() }
