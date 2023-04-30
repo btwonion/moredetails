@@ -6,12 +6,14 @@ import dev.nyon.moredetails.config.loadConfig
 import kotlinx.serialization.json.Json
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
 import net.minecraft.client.KeyMapping
+import net.minecraft.client.Minecraft
 import org.lwjgl.glfw.GLFW
 
 val json = Json {
     prettyPrint = true
     encodeDefaults = true
 }
+val minecraft: Minecraft = Minecraft.getInstance()
 
 object MoreDetails {
     val configKeyBind = KeyBindingHelper.registerKeyBinding(

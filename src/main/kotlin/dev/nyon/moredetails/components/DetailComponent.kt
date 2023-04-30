@@ -8,8 +8,10 @@ import dev.isxander.yacl.gui.controllers.TickBoxController
 import dev.isxander.yacl.gui.controllers.string.StringController
 import dev.isxander.yacl.gui.controllers.string.number.IntegerFieldController
 import kotlinx.serialization.Serializable
+import net.minecraft.client.gui.Font
 import net.minecraft.client.gui.GuiComponent
 import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.Style
 import java.awt.Color
 
 @Serializable
@@ -21,8 +23,6 @@ sealed interface DetailComponent {
     var color: Int
     var background: Boolean
     var backgroundColor: Int
-    var height: Int
-    var width: Int
     var format: String
     val placeholders: Map<String, String>
 
@@ -38,8 +38,15 @@ sealed interface DetailComponent {
         var decimalPlaces: Int
     }
 
-    fun renderBackground(poseStack: PoseStack) {
-        if (background) GuiComponent.fill(poseStack, x, y, x + width, y + height, backgroundColor)
+    fun renderBackground(poseStack: PoseStack, value: Component, font: Font) {
+        if (background) GuiComponent.fill(
+            poseStack,
+            x - 1,
+            y - 1,
+            x + font.width(value.string) + 1,
+            y + font.lineHeight + 1,
+            backgroundColor
+        )
     }
 
     fun OptionGroup.Builder.createDefaultOptions() {
@@ -64,19 +71,10 @@ sealed interface DetailComponent {
                 .binding(y, { y }, { new -> y = new }).controller(::IntegerFieldController).build()
         )
         this.option(
-            Option.createBuilder(Int::class.java).name(Component.literal("Height"))
-                .tooltip(Component.literal("Changes the height of the component."))
-                .binding(height, { height }, { new -> height = new }).controller(::IntegerFieldController).build()
-        )
-        this.option(
-            Option.createBuilder(Int::class.java).name(Component.literal("Width"))
-                .tooltip(Component.literal("Changes the width of the component."))
-                .binding(width, { width }, { new -> width = new }).controller(::IntegerFieldController).build()
-        )
-        this.option(
             Option.createBuilder(Color::class.java).name(Component.literal("Color"))
                 .tooltip(Component.literal("Changes the text color of the component."))
-                .binding(Color(color), { Color(color) }, { new -> color = new.rgb }).controller(::ColorController)
+                .binding(Color(color), { Color(color) }, { new -> color = new.rgb })
+                .controller { ColorController(it, true) }
                 .build()
         )
         this.option(
@@ -89,13 +87,15 @@ sealed interface DetailComponent {
             Option.createBuilder(Color::class.java).name(Component.literal("Background color"))
                 .tooltip(Component.literal("Changes the background color of the component."))
                 .binding(Color(backgroundColor), { Color(backgroundColor) }, { new -> backgroundColor = new.rgb })
-                .controller(::ColorController).build()
+                .controller { ColorController(it, true) }.build()
         )
         this.option(
             Option.createBuilder(String::class.java).name(Component.literal("Format"))
                 .tooltip(Component.literal("Changes the format of the component.").apply {
                     placeholders.forEach { (placeholder, description) ->
-                        append(Component.literal("\n - $placeholder: $description"))
+                        append(Component.literal("\n - "))
+                        append(Component.literal(placeholder).withStyle(Style.EMPTY.withColor(0xA1A0AC)))
+                        append(Component.literal("  $description").withStyle(Style.EMPTY.withColor(0x75747E)))
                     }
                 })
                 .binding(format, { format }, { new -> format = new }).controller(::StringController).build()

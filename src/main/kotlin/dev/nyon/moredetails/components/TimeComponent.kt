@@ -4,12 +4,12 @@ import com.mojang.blaze3d.vertex.PoseStack
 import dev.isxander.yacl.api.Option
 import dev.isxander.yacl.api.OptionGroup
 import dev.isxander.yacl.gui.controllers.TickBoxController
+import dev.nyon.moredetails.minecraft
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
-import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiComponent
 import net.minecraft.client.gui.components.Renderable
 import net.minecraft.network.chat.Component
@@ -23,8 +23,6 @@ class TimeComponent(
     override var color: Int = 0x6C92F9,
     override var backgroundColor: Int = 0x5010191D,
     override var background: Boolean = false,
-    override var height: Int = 10,
-    override var width: Int = 30,
     var twentyFourHourFormat: Boolean = true,
     override var format: String = if (twentyFourHourFormat) "%hour%:%minute%" else "%hour%:%minute% %period%",
     override val placeholders: Map<String, String> = mapOf(
@@ -45,18 +43,19 @@ class TimeComponent(
     override fun register() {
         widget = Renderable { poseStack, _, _, _ ->
             val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
-            renderBackground(poseStack)
+            val component = Component.literal(
+                format
+                    .replace(
+                        "%hour%",
+                        if (twentyFourHourFormat || now.hour <= 12) now.hour.toString() else (now.hour - 12).toString()
+                    )
+                    .replace("%minute%", now.minute.toString())
+                    .replace("%second%", now.second.toString())
+                    .replace("%period%", if (now.hour > 12) "pm" else "am")
+            )
+            renderBackground(poseStack, component, minecraft.font)
             GuiComponent.drawString(
-                poseStack, Minecraft.getInstance().font, Component.literal(
-                    format
-                        .replace(
-                            "%hour%",
-                            if (twentyFourHourFormat || now.hour <= 12) now.hour.toString() else (now.hour - 12).toString()
-                        )
-                        .replace("%minute%", now.minute.toString())
-                        .replace("%second%", now.second.toString())
-                        .replace("%period%", if (now.hour > 12) "pm" else "am")
-                ), x, y, color
+                poseStack, minecraft.font, component, x, y, color
             )
         }
     }

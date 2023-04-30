@@ -2,9 +2,9 @@ package dev.nyon.moredetails.components
 
 import com.mojang.blaze3d.vertex.PoseStack
 import dev.isxander.yacl.api.OptionGroup
+import dev.nyon.moredetails.minecraft
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
-import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiComponent
 import net.minecraft.client.gui.components.Renderable
 import net.minecraft.core.SectionPos
@@ -20,8 +20,6 @@ class PlayerCoordinatesComponent(
     override var color: Int = 0xA4A7FF,
     override var background: Boolean = false,
     override var backgroundColor: Int = 0x37364C,
-    override var height: Int = 10,
-    override var width: Int = 50,
     override var format: String = "XYZ: %x% %y% %z%",
     override var decimalPlaces: Int = 1,
     override val placeholders: Map<String, String> = mapOf(
@@ -40,7 +38,7 @@ class PlayerCoordinatesComponent(
 
     override fun register() {
         widget = coordinatesWidget {
-            val player = Minecraft.getInstance().player ?: error("player is null")
+            val player = minecraft.player ?: error("player is null")
             return@coordinatesWidget Triple(player.x, player.y, player.z)
         }
     }
@@ -67,8 +65,6 @@ class PlayerChunkCoordinatesComponent(
     override var color: Int = 0xA4A7FF,
     override var background: Boolean = false,
     override var backgroundColor: Int = 0x37364C,
-    override var height: Int = 10,
-    override var width: Int = 50,
     override var format: String = "Chunk XYZ: %x% %y% %z%",
     override var decimalPlaces: Int = 1,
     override val placeholders: Map<String, String> = mapOf(
@@ -87,7 +83,7 @@ class PlayerChunkCoordinatesComponent(
 
     override fun register() {
         widget = coordinatesWidget {
-            val player = Minecraft.getInstance().player ?: error("player is null")
+            val player = minecraft.player ?: error("player is null")
             return@coordinatesWidget Triple(
                 (player.blockPosition().x and 15).toDouble(),
                 (player.blockPosition().y and 15).toDouble(),
@@ -118,8 +114,6 @@ class ChunkCoordinatesComponent(
     override var color: Int = 0xA4A7FF,
     override var background: Boolean = false,
     override var backgroundColor: Int = 0x37364C,
-    override var height: Int = 10,
-    override var width: Int = 50,
     override var format: String = "Chunk: %x% %z%",
     override var decimalPlaces: Int = 1, override val placeholders: Map<String, String> = mapOf(
         "%x%" to "the x coordinate of the chunk you are at",
@@ -136,7 +130,7 @@ class ChunkCoordinatesComponent(
 
     override fun register() {
         widget = coordinatesWidget {
-            val player = Minecraft.getInstance().player ?: error("player is null")
+            val player = minecraft.player ?: error("player is null")
 
             val chunkPos = ChunkPos(player.blockPosition())
             return@coordinatesWidget Triple(
@@ -163,7 +157,6 @@ fun DetailComponent.CoordinatesComponent.coordinatesWidget(coordinatesResolver: 
         fun Double.formatToInt(): String =
             if (this == this.toInt().toDouble()) this.toInt().toString() else "%.${decimalPlaces}f".format(this)
 
-        val minecraft = Minecraft.getInstance()
         val (playerX, playerY, playerZ) = coordinatesResolver()
         val component = Component.literal(
             format.replace("%x%", playerX.formatToInt()).replace(
@@ -171,6 +164,6 @@ fun DetailComponent.CoordinatesComponent.coordinatesWidget(coordinatesResolver: 
             )
         )
 
-        renderBackground(poseStack)
+        renderBackground(poseStack, component, minecraft.font)
         GuiComponent.drawString(poseStack, minecraft.font, component, x, y, color)
     }

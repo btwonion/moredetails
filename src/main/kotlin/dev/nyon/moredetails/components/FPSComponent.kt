@@ -2,13 +2,16 @@ package dev.nyon.moredetails.components
 
 import com.mojang.blaze3d.vertex.PoseStack
 import dev.isxander.yacl.api.OptionGroup
+import dev.nyon.moredetails.minecraft
 import dev.nyon.moredetails.mixins.MinecraftAccessor
+import kotlinx.datetime.Clock
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
-import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiComponent
 import net.minecraft.client.gui.components.Renderable
 import net.minecraft.network.chat.Component
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 @Serializable
 class FPSComponent(
@@ -19,35 +22,41 @@ class FPSComponent(
     override var color: Int = 0x6C92F9,
     override var backgroundColor: Int = 0x5010191D,
     override var background: Boolean = false,
-    override var height: Int = 10,
-    override var width: Int = 30,
     override var format: String = "FPS: %fps%",
-    override val placeholders: Map<String, String> = mapOf("%fps%" to "the fps you have at the moment")
+    override val placeholders: Map<String, String> = mapOf("%fps%" to "the fps you have at the moment"),
+    var updateCooldown: Duration = 500.milliseconds
 ) : DetailComponent {
 
     @Transient
     private var widget: Renderable? = null
 
+    private var nextUpdate = Clock.System.now() + updateCooldown
+    private var currentFPS: Int = 0
     override fun update(poseStack: PoseStack) {
         widget?.render(poseStack, 0, 0, 0F)
     }
 
     override fun register() {
         widget = Renderable { poseStack, _, _, _ ->
-            renderBackground(poseStack)
+            if (Clock.System.now() >= nextUpdate) {
+                currentFPS = (minecraft as MinecraftAccessor).frames
+                nextUpdate = Clock.System.now() + updateCooldown
+            }
+            val component = Component.literal(
+                format.replace(
+                    "%fps%",
+                    currentFPS.toString()
+                )
+            )
+            renderBackground(poseStack, component, minecraft.font)
             GuiComponent.drawString(
-                poseStack, Minecraft.getInstance().font, Component.literal(
-                    format.replace(
-                        "%fps%", (Minecraft.getInstance() as MinecraftAccessor).frames.toString()
-                    )
-                ), x, y, color
+                poseStack, minecraft.font, component, x, y, color
             )
         }
     }
 
     override fun remove() {
         widget = null
-        enabled = false
     }
 
     override fun createYACLGroup(group: OptionGroup.Builder): OptionGroup {

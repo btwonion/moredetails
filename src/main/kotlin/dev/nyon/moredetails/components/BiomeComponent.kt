@@ -5,10 +5,10 @@ import dev.isxander.yacl.api.Option
 import dev.isxander.yacl.api.OptionGroup
 import dev.isxander.yacl.gui.controllers.TickBoxController
 import dev.nyon.moredetails.config.config
+import dev.nyon.moredetails.minecraft
 import dev.nyon.moredetails.util.color
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
-import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiComponent
 import net.minecraft.client.gui.components.Renderable
 import net.minecraft.network.chat.Component
@@ -24,8 +24,6 @@ class BiomeComponent(
     override var color: Int = 0x50C196,
     override var background: Boolean = false,
     override var backgroundColor: Int = 0x50C196,
-    override var height: Int = 10,
-    override var width: Int = 30,
     override var format: String = "Biome: %biome%",
     override val placeholders: Map<String, String> = mapOf("%biome%" to "the biome you are in"),
     var dynamicColor: Boolean = true
@@ -39,8 +37,6 @@ class BiomeComponent(
 
     override fun register() {
         widget = Renderable { poseStack, _, _, _ ->
-            renderBackground(poseStack)
-            val minecraft = Minecraft.getInstance()
             val biome = minecraft.player!!.level.getBiome(minecraft.player!!.blockPosition())
             val component: MutableComponent = Component.literal("")
             val split = format.split("%biome%")
@@ -54,7 +50,8 @@ class BiomeComponent(
                 component.append(split[1])
             }
 
-            GuiComponent.drawString(poseStack, Minecraft.getInstance().font, component, x, y, color)
+            renderBackground(poseStack, component, minecraft.font)
+            GuiComponent.drawString(poseStack, minecraft.font, component, x, y, color)
         }
     }
 
