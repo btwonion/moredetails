@@ -159,9 +159,10 @@ fun DetailComponent.CoordinatesComponent.coordinatesWidget(coordinatesResolver: 
 
         val (playerX, playerY, playerZ) = coordinatesResolver()
         val component = Component.literal(
-            format.replace("%x%", playerX.formatToInt()).replace(
-                "%y%", playerY.formatToInt().replace("%z%", playerZ.formatToInt())
-            )
+            format
+                .replace("%x%", playerX.formatToInt())
+                .replace("%y%", playerY.formatToInt())
+                .replace("%z%", playerZ.formatToInt())
         )
 
         renderBackground(poseStack, component, minecraft.font)
