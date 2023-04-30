@@ -50,7 +50,7 @@ class TimeComponent(
                         "%hour%",
                         if (twentyFourHourFormat || now.hour <= 12) now.hour.toString() else (now.hour - 12).toString()
                     )
-                    .replace("%minute%", now.minute.toString())
+                    .replace("%minute%", if (now.minute < 10 ) "0${now.minute}" else now.minute.toString())
                     .replace("%second%", now.second.toString())
                     .replace("%period%", if (now.hour > 12) "pm" else "am")
             )
