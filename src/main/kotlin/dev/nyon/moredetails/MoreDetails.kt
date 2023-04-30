@@ -3,6 +3,7 @@ package dev.nyon.moredetails
 import com.mojang.blaze3d.platform.InputConstants
 import dev.nyon.moredetails.config.config
 import dev.nyon.moredetails.config.loadConfig
+import dev.nyon.moredetails.config.screen.generateConfigScreen
 import kotlinx.serialization.json.Json
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
 import net.minecraft.client.KeyMapping
@@ -16,18 +17,18 @@ val json = Json {
 val minecraft: Minecraft = Minecraft.getInstance()
 
 object MoreDetails {
-    val configKeyBind = KeyBindingHelper.registerKeyBinding(
+    private val configKeyBind: KeyMapping = KeyBindingHelper.registerKeyBinding(
         KeyMapping(
-            "Open MoreDetails config screen",
+            "Open moredetails config screen",
             InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_U,
             "moredetails"
         )
     )
 
-    val reorderKeyBind = KeyBindingHelper.registerKeyBinding(
+    val reorderKeyBind: KeyMapping = KeyBindingHelper.registerKeyBinding(
         KeyMapping(
-            "Reorder MoreDetails components",
+            "Reorder moredetails components",
             InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_I,
             "moredetails"
@@ -39,6 +40,12 @@ object MoreDetails {
 
         config.components.filter { it.enabled }.forEach {
             it.register()
+        }
+    }
+
+    fun tick() {
+        while (configKeyBind.consumeClick()) {
+            minecraft.setScreen(generateConfigScreen(null))
         }
     }
 }

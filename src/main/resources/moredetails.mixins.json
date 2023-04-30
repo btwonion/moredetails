@@ -3,7 +3,9 @@
   "minVersion": "0.8",
   "package": "dev.nyon.moredetails.mixins",
   "compatibilityLevel": "JAVA_17",
-  "mixins": [],
+  "mixins": [
+    "MinecraftMixin"
+  ],
   "injectors": {
     "defaultRequire": 1
   },
