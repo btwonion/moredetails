@@ -1,9 +1,10 @@
 package dev.nyon.moredetails
 
 import com.mojang.blaze3d.platform.InputConstants
+import dev.nyon.moredetails.components.reorder.ReorderScreen
 import dev.nyon.moredetails.config.config
 import dev.nyon.moredetails.config.loadConfig
-import dev.nyon.moredetails.config.screen.generateConfigScreen
+import dev.nyon.moredetails.config.generateConfigScreen
 import kotlinx.serialization.json.Json
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
 import net.minecraft.client.KeyMapping

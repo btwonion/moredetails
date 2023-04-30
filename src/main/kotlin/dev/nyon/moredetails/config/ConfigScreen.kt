@@ -1,10 +1,8 @@
-package dev.nyon.moredetails.config.screen
+package dev.nyon.moredetails.config
 
 import dev.isxander.yacl.api.ConfigCategory
 import dev.isxander.yacl.api.OptionGroup
 import dev.isxander.yacl.api.YetAnotherConfigLib
-import dev.nyon.moredetails.config.config
-import dev.nyon.moredetails.config.saveConfig
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
 
