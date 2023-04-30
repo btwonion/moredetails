@@ -14,7 +14,7 @@ plugins {
 }
 
 group = "dev.nyon"
-val majorVersion = "1.0.0"
+val majorVersion = "1.0.1"
 val mcVersion = "1.19.4"
 version = "$majorVersion-$mcVersion"
 description = "Adds useful information to your ingame hud"
