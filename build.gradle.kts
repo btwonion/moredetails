@@ -88,7 +88,9 @@ modrinth {
     gameVersions.set(listOf(mcVersion))
     loaders.set(listOf("fabric", "quilt"))
     dependencies {
+        required.project("fabric-api")
         required.project("fabric-language-kotlin")
+        required.project("yacl")
         optional.project("modmenu")
     }
     changelog.set(changelogText)
