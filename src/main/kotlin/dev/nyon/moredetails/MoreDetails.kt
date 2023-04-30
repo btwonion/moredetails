@@ -27,7 +27,7 @@ object MoreDetails {
         )
     )
 
-    val reorderKeyBind: KeyMapping = KeyBindingHelper.registerKeyBinding(
+    private val reorderKeyBind: KeyMapping = KeyBindingHelper.registerKeyBinding(
         KeyMapping(
             "Reorder moredetails components",
             InputConstants.Type.KEYSYM,
