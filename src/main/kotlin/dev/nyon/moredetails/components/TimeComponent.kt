@@ -48,10 +48,10 @@ class TimeComponent(
                 format
                     .replace(
                         "%hour%",
-                        if (twentyFourHourFormat || now.hour <= 12) now.hour.toString() else (now.hour - 12).toString()
+                        if (twentyFourHourFormat || now.hour <= 12) now.hour.assertMissingNull() else (now.hour - 12).assertMissingNull()
                     )
-                    .replace("%minute%", if (now.minute < 10 ) "0${now.minute}" else now.minute.toString())
-                    .replace("%second%", now.second.toString())
+                    .replace("%minute%", now.minute.assertMissingNull())
+                    .replace("%second%", now.second.assertMissingNull())
                     .replace("%period%", if (now.hour > 12) "pm" else "am")
             )
             renderBackground(poseStack, component, minecraft.font)
