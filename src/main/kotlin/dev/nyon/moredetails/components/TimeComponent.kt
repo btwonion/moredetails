@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack
 import dev.isxander.yacl.api.Option
 import dev.isxander.yacl.api.OptionGroup
 import dev.isxander.yacl.gui.controllers.TickBoxController
+import dev.nyon.moredetails.config.config
 import dev.nyon.moredetails.minecraft
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
@@ -18,12 +19,12 @@ import net.minecraft.network.chat.Component
 class TimeComponent(
     override var name: String = "Time Component",
     override var enabled: Boolean = false,
-    override var x: Int = 0,
-    override var y: Int = 0,
+    override var x: Double = 1.0,
+    override var y: Double = 20.0,
     override var color: Int = 0x6C92F9,
     override var backgroundColor: Int = 0x5010191D,
     override var background: Boolean = false,
-    var twentyFourHourFormat: Boolean = true,
+    private var twentyFourHourFormat: Boolean = true,
     override var format: String = if (twentyFourHourFormat) "%hour%:%minute%" else "%hour%:%minute% %period%",
     override val placeholders: Map<String, String> = mapOf(
         "%hour%" to "the current hour of the day",
@@ -54,9 +55,15 @@ class TimeComponent(
                     .replace("%period%", if (now.hour > 12) "pm" else "am")
             )
             renderBackground(poseStack, component, minecraft.font)
-            GuiComponent.drawString(
-                poseStack, minecraft.font, component, x, y, color
+            if (config.textShadow) GuiComponent.drawString(
+                poseStack,
+                minecraft.font,
+                component,
+                x.toInt(),
+                y.toInt(),
+                color
             )
+            else minecraft.font.draw(poseStack, component, x.toFloat(), y.toFloat(), color)
         }
     }
 

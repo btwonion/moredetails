@@ -2,6 +2,7 @@ package dev.nyon.moredetails.components
 
 import com.mojang.blaze3d.vertex.PoseStack
 import dev.isxander.yacl.api.OptionGroup
+import dev.nyon.moredetails.config.config
 import dev.nyon.moredetails.minecraft
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -14,8 +15,8 @@ import net.minecraft.world.level.ChunkPos
 @Serializable
 class PlayerCoordinatesComponent(
     override var name: String = "Player Coordinates Component",
-    override var x: Int = 0,
-    override var y: Int = 50,
+    override var x: Double = 1.0,
+    override var y: Double = 50.0,
     override var enabled: Boolean = false,
     override var color: Int = 0xA4A7FF,
     override var background: Boolean = false,
@@ -59,8 +60,8 @@ class PlayerCoordinatesComponent(
 @Serializable
 class PlayerChunkCoordinatesComponent(
     override var name: String = "Player Chunk Coordinates Component",
-    override var x: Int = 0,
-    override var y: Int = 70,
+    override var x: Double = 1.0,
+    override var y: Double = 70.0,
     override var enabled: Boolean = false,
     override var color: Int = 0xA4A7FF,
     override var background: Boolean = false,
@@ -108,8 +109,8 @@ class PlayerChunkCoordinatesComponent(
 @Serializable
 class ChunkCoordinatesComponent(
     override var name: String = "Chunk Coordinates Component",
-    override var x: Int = 0,
-    override var y: Int = 90,
+    override var x: Double = 1.0,
+    override var y: Double = 90.0,
     override var enabled: Boolean = false,
     override var color: Int = 0xA4A7FF,
     override var background: Boolean = false,
@@ -166,5 +167,6 @@ fun DetailComponent.CoordinatesComponent.coordinatesWidget(coordinatesResolver: 
         )
 
         renderBackground(poseStack, component, minecraft.font)
-        GuiComponent.drawString(poseStack, minecraft.font, component, x, y, color)
+        if (config.textShadow) GuiComponent.drawString(poseStack, minecraft.font, component, x.toInt(), y.toInt(), color)
+        else minecraft.font.draw(poseStack, component, x.toFloat(), y.toFloat(), color)
     }

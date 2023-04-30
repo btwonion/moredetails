@@ -6,7 +6,7 @@ import dev.isxander.yacl.api.OptionGroup
 import dev.isxander.yacl.gui.controllers.ColorController
 import dev.isxander.yacl.gui.controllers.TickBoxController
 import dev.isxander.yacl.gui.controllers.string.StringController
-import dev.isxander.yacl.gui.controllers.string.number.IntegerFieldController
+import dev.isxander.yacl.gui.controllers.string.number.DoubleFieldController
 import kotlinx.serialization.Serializable
 import net.minecraft.client.gui.Font
 import net.minecraft.client.gui.GuiComponent
@@ -18,8 +18,8 @@ import java.awt.Color
 sealed interface DetailComponent {
     var name: String
     var enabled: Boolean
-    var x: Int
-    var y: Int
+    var x: Double
+    var y: Double
     var color: Int
     var background: Boolean
     var backgroundColor: Int
@@ -41,10 +41,10 @@ sealed interface DetailComponent {
     fun renderBackground(poseStack: PoseStack, value: Component, font: Font) {
         if (background) GuiComponent.fill(
             poseStack,
-            x - 1,
-            y - 1,
-            x + font.width(value.string) + 1,
-            y + font.lineHeight + 1,
+            (x - 1).toInt(),
+            (y - 1).toInt(),
+            (x + font.width(value.string) + 1).toInt(),
+            (y + font.lineHeight + 1).toInt(),
             backgroundColor
         )
     }
@@ -61,14 +61,14 @@ sealed interface DetailComponent {
                 .binding(enabled, { enabled }, { new -> enabled = new }).controller(::TickBoxController).build()
         )
         this.option(
-            Option.createBuilder(Int::class.java).name(Component.literal("X coordinate"))
+            Option.createBuilder(Double::class.java).name(Component.literal("X coordinate"))
                 .tooltip(Component.literal("Changes the x coordinate where the component is displayed. Suggested to modify via the reorder screen!"))
-                .binding(x, { x }, { new -> x = new }).controller(::IntegerFieldController).build()
+                .binding(x, { x }, { new -> x = new }).controller(::DoubleFieldController).build()
         )
         this.option(
-            Option.createBuilder(Int::class.java).name(Component.literal("Y coordinate"))
+            Option.createBuilder(Double::class.java).name(Component.literal("Y coordinate"))
                 .tooltip(Component.literal("Changes the y coordinate where the component is displayed. Suggested to modify via the reorder screen!"))
-                .binding(y, { y }, { new -> y = new }).controller(::IntegerFieldController).build()
+                .binding(y, { y }, { new -> y = new }).controller(::DoubleFieldController).build()
         )
         this.option(
             Option.createBuilder(Color::class.java).name(Component.literal("Color"))

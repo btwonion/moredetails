@@ -2,6 +2,7 @@ package dev.nyon.moredetails.components
 
 import com.mojang.blaze3d.vertex.PoseStack
 import dev.isxander.yacl.api.OptionGroup
+import dev.nyon.moredetails.config.config
 import dev.nyon.moredetails.minecraft
 import dev.nyon.moredetails.mixins.MinecraftAccessor
 import kotlinx.datetime.Clock
@@ -17,14 +18,14 @@ import kotlin.time.Duration.Companion.milliseconds
 class FPSComponent(
     override var name: String = "FPS Component",
     override var enabled: Boolean = false,
-    override var x: Int = 0,
-    override var y: Int = 0,
+    override var x: Double = 1.0,
+    override var y: Double = 1.0,
     override var color: Int = 0x6C92F9,
     override var backgroundColor: Int = 0x5010191D,
     override var background: Boolean = false,
     override var format: String = "FPS: %fps%",
     override val placeholders: Map<String, String> = mapOf("%fps%" to "the fps you have at the moment"),
-    var updateCooldown: Duration = 500.milliseconds
+    private var updateCooldown: Duration = 500.milliseconds
 ) : DetailComponent {
 
     @Transient
@@ -49,9 +50,8 @@ class FPSComponent(
                 )
             )
             renderBackground(poseStack, component, minecraft.font)
-            GuiComponent.drawString(
-                poseStack, minecraft.font, component, x, y, color
-            )
+            if (config.textShadow) GuiComponent.drawString(poseStack, minecraft.font, component, x.toInt(), y.toInt(), color)
+            else minecraft.font.draw(poseStack, component, x.toFloat(), y.toFloat(), color)
         }
     }
 

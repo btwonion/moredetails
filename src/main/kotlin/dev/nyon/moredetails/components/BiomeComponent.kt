@@ -19,14 +19,14 @@ import net.minecraft.network.chat.Style
 class BiomeComponent(
     override var name: String = "Biome Component",
     override var enabled: Boolean = false,
-    override var x: Int = 0,
-    override var y: Int = 110,
+    override var x: Double = 1.0,
+    override var y: Double = 110.0,
     override var color: Int = 0x50C196,
     override var background: Boolean = false,
     override var backgroundColor: Int = 0x50C196,
     override var format: String = "Biome: %biome%",
     override val placeholders: Map<String, String> = mapOf("%biome%" to "the biome you are in"),
-    var dynamicColor: Boolean = true
+    private var dynamicColor: Boolean = true
 ) : DetailComponent {
 
     @Transient
@@ -51,7 +51,8 @@ class BiomeComponent(
             }
 
             renderBackground(poseStack, component, minecraft.font)
-            GuiComponent.drawString(poseStack, minecraft.font, component, x, y, color)
+            if (config.textShadow) GuiComponent.drawString(poseStack, minecraft.font, component, x.toInt(), y.toInt(), color)
+            else minecraft.font.draw(poseStack, component, x.toFloat(), y.toFloat(), color)
         }
     }
 
