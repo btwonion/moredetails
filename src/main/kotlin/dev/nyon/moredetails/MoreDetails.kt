@@ -48,5 +48,8 @@ object MoreDetails {
         while (configKeyBind.consumeClick()) {
             minecraft.setScreen(generateConfigScreen(null))
         }
+        while (reorderKeyBind.consumeClick()) {
+            minecraft.setScreen(ReorderScreen(null))
+        }
     }
 }
