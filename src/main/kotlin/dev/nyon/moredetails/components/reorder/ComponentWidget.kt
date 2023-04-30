@@ -7,7 +7,6 @@ import dev.nyon.moredetails.util.verticalLine
 import net.minecraft.client.gui.Font
 import net.minecraft.client.gui.GuiComponent
 import net.minecraft.client.gui.components.Renderable
-import net.minecraft.network.chat.Component
 
 class ComponentWidget(private val component: DetailComponent, private val font: Font) : Renderable {
     override fun render(poseStack: PoseStack, mouseX: Int, mouseY: Int, partialTick: Float) {
@@ -29,7 +28,7 @@ class ComponentWidget(private val component: DetailComponent, private val font: 
 
         font.draw(
             poseStack,
-            Component.literal(component.format),
+            component.example,
             component.x.toFloat(),
             component.y.toFloat(),
             component.color

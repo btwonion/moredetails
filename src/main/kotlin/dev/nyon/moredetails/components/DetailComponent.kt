@@ -25,6 +25,7 @@ sealed interface DetailComponent {
     var backgroundColor: Int
     var format: String
     val placeholders: Map<String, String>
+    val example: Component
 
     fun update(poseStack: PoseStack)
 

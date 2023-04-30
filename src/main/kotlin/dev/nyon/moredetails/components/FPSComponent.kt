@@ -24,14 +24,19 @@ class FPSComponent(
     override var backgroundColor: Int = 0x5010191D,
     override var background: Boolean = false,
     override var format: String = "FPS: %fps%",
+    @Transient
     override val placeholders: Map<String, String> = mapOf("%fps%" to "the fps you have at the moment"),
-    private var updateCooldown: Duration = 500.milliseconds
+    private var updateCooldown: Duration = 500.milliseconds,
+    @Transient
+    override val example: Component = Component.literal(format.replace("%fps%", "100"))
 ) : DetailComponent {
 
     @Transient
     private var widget: Renderable? = null
 
+    @Transient
     private var nextUpdate = Clock.System.now() + updateCooldown
+    @Transient
     private var currentFPS: Int = 0
     override fun update(poseStack: PoseStack) {
         widget?.render(poseStack, 0, 0, 0F)
@@ -50,7 +55,14 @@ class FPSComponent(
                 )
             )
             renderBackground(poseStack, component, minecraft.font)
-            if (config.textShadow) GuiComponent.drawString(poseStack, minecraft.font, component, x.toInt(), y.toInt(), color)
+            if (config.textShadow) GuiComponent.drawString(
+                poseStack,
+                minecraft.font,
+                component,
+                x.toInt(),
+                y.toInt(),
+                color
+            )
             else minecraft.font.draw(poseStack, component, x.toFloat(), y.toFloat(), color)
         }
     }

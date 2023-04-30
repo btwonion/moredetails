@@ -6,6 +6,7 @@ import dev.isxander.yacl.api.OptionGroup
 import dev.isxander.yacl.gui.controllers.TickBoxController
 import dev.nyon.moredetails.config.config
 import dev.nyon.moredetails.minecraft
+import dev.nyon.moredetails.util.assertMissingNull
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -26,10 +27,15 @@ class TimeComponent(
     override var background: Boolean = false,
     private var twentyFourHourFormat: Boolean = true,
     override var format: String = if (twentyFourHourFormat) "%hour%:%minute%" else "%hour%:%minute% %period%",
+    @Transient
     override val placeholders: Map<String, String> = mapOf(
         "%hour%" to "the current hour of the day",
         "%minute%" to "the current minute in the current hour",
         "%period%" to "the period in the day"
+    ),
+    @Transient
+    override val example: Component = Component.literal(
+        format.replace("%hour%", "10").replace("%minute%", "10").replace("%period%", "pm")
     )
 ) : DetailComponent {
 

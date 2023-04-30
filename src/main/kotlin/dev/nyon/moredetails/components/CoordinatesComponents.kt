@@ -23,10 +23,15 @@ class PlayerCoordinatesComponent(
     override var backgroundColor: Int = 0x37364C,
     override var format: String = "XYZ: %x% %y% %z%",
     override var decimalPlaces: Int = 1,
+    @Transient
     override val placeholders: Map<String, String> = mapOf(
         "%x%" to "the x coordinate you are at",
         "%y%" to "the y coordinate you are at",
         "%z%" to "the z coordinate you are at"
+    ),
+    @Transient
+    override val example: Component = Component.literal(
+        format.replace("%x%", "0").replace("%y%", "0").replace("%z%", "0")
     )
 ) : DetailComponent.CoordinatesComponent {
 
@@ -68,10 +73,15 @@ class PlayerChunkCoordinatesComponent(
     override var backgroundColor: Int = 0x37364C,
     override var format: String = "Chunk XYZ: %x% %y% %z%",
     override var decimalPlaces: Int = 1,
+    @Transient
     override val placeholders: Map<String, String> = mapOf(
         "%x%" to "the x coordinate of you in your chunk",
         "%y%" to "the y coordinate of you in your chunk",
         "%z%" to "the z coordinate of you in your chunk"
+    ),
+    @Transient
+    override val example: Component = Component.literal(
+        format.replace("%x%", "0").replace("%y%", "0").replace("%z%", "0")
     )
 ) : DetailComponent.CoordinatesComponent {
 
@@ -116,9 +126,15 @@ class ChunkCoordinatesComponent(
     override var background: Boolean = false,
     override var backgroundColor: Int = 0x37364C,
     override var format: String = "Chunk: %x% %z%",
-    override var decimalPlaces: Int = 1, override val placeholders: Map<String, String> = mapOf(
+    override var decimalPlaces: Int = 1,
+    @Transient
+    override val placeholders: Map<String, String> = mapOf(
         "%x%" to "the x coordinate of the chunk you are at",
         "%z%" to "the z coordinate of the chunk you are at"
+    ),
+    @Transient
+    override val example: Component = Component.literal(
+        format.replace("%x%", "0").replace("%z%", "0")
     )
 ) : DetailComponent.CoordinatesComponent {
 
@@ -167,6 +183,13 @@ fun DetailComponent.CoordinatesComponent.coordinatesWidget(coordinatesResolver: 
         )
 
         renderBackground(poseStack, component, minecraft.font)
-        if (config.textShadow) GuiComponent.drawString(poseStack, minecraft.font, component, x.toInt(), y.toInt(), color)
+        if (config.textShadow) GuiComponent.drawString(
+            poseStack,
+            minecraft.font,
+            component,
+            x.toInt(),
+            y.toInt(),
+            color
+        )
         else minecraft.font.draw(poseStack, component, x.toFloat(), y.toFloat(), color)
     }

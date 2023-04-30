@@ -25,8 +25,11 @@ class BiomeComponent(
     override var background: Boolean = false,
     override var backgroundColor: Int = 0x50C196,
     override var format: String = "Biome: %biome%",
+    @Transient
     override val placeholders: Map<String, String> = mapOf("%biome%" to "the biome you are in"),
-    private var dynamicColor: Boolean = true
+    private var dynamicColor: Boolean = true,
+    @Transient
+    override val example: Component = Component.literal(format.replace("%biome%", "plains"))
 ) : DetailComponent {
 
     @Transient
@@ -51,7 +54,14 @@ class BiomeComponent(
             }
 
             renderBackground(poseStack, component, minecraft.font)
-            if (config.textShadow) GuiComponent.drawString(poseStack, minecraft.font, component, x.toInt(), y.toInt(), color)
+            if (config.textShadow) GuiComponent.drawString(
+                poseStack,
+                minecraft.font,
+                component,
+                x.toInt(),
+                y.toInt(),
+                color
+            )
             else minecraft.font.draw(poseStack, component, x.toFloat(), y.toFloat(), color)
         }
     }
