@@ -17,7 +17,7 @@ All the components are highly customizable in coloring, formatting and placing.
 
 ## Keybindings
 
-- `i` opens the reorder overlay, where you can reorder your components
+- `i` opens the reorder overlay, where you can reorder your components through dragging
 - `u` opens the config screen
 
 ### Other
