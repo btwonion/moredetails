@@ -1,15 +1,15 @@
 package dev.nyon.moredetails.components
 
-import com.mojang.blaze3d.vertex.PoseStack
-import dev.isxander.yacl.api.Option
-import dev.isxander.yacl.api.OptionGroup
-import dev.isxander.yacl.gui.controllers.TickBoxController
+import dev.isxander.yacl3.api.Option
+import dev.isxander.yacl3.api.OptionDescription
+import dev.isxander.yacl3.api.OptionGroup
+import dev.isxander.yacl3.api.controller.TickBoxControllerBuilder
 import dev.nyon.moredetails.config.config
 import dev.nyon.moredetails.minecraft
 import dev.nyon.moredetails.util.color
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
-import net.minecraft.client.gui.GuiComponent
+import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.Renderable
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
@@ -34,13 +34,13 @@ class BiomeComponent(
 
     @Transient
     private var widget: Renderable? = null
-    override fun update(poseStack: PoseStack) {
-        widget?.render(poseStack, 0, 0, 0F)
+    override fun update(matrices: GuiGraphics) {
+        widget?.render(matrices, 0, 0, 0F)
     }
 
     override fun register() {
-        widget = Renderable { poseStack, _, _, _ ->
-            val biome = minecraft.player!!.level.getBiome(minecraft.player!!.blockPosition())
+        widget = Renderable { matrices, _, _, _ ->
+            val biome = minecraft.player!!.level().getBiome(minecraft.player!!.blockPosition())
             val component: MutableComponent = Component.literal("")
             val split = format.split("%biome%")
             component.append(split[0])
@@ -53,16 +53,15 @@ class BiomeComponent(
                 component.append(split[1])
             }
 
-            renderBackground(poseStack, component, minecraft.font)
-            if (config.textShadow) GuiComponent.drawString(
-                poseStack,
+            renderBackground(matrices, component, minecraft.font)
+            matrices.drawString(
                 minecraft.font,
                 component,
                 x.toInt(),
                 y.toInt(),
-                color
+                color,
+                config.textShadow
             )
-            else minecraft.font.draw(poseStack, component, x.toFloat(), y.toFloat(), color)
         }
     }
 
@@ -73,12 +72,13 @@ class BiomeComponent(
     override fun createYACLGroup(group: OptionGroup.Builder): OptionGroup {
         group.collapsed(true)
         group.name(Component.literal(name))
-        group.tooltip(Component.literal("Configure the BiomeComponent '$name'"))
+        group.description(OptionDescription.of(Component.literal("Configure the BiomeComponent '$name'")))
         group.createDefaultOptions()
         group.option(
-            Option.createBuilder(Boolean::class.java).name(Component.literal("Dynamic color"))
-                .tooltip(Component.literal("Decides whether the color of the biome component should change with the biome or not."))
-                .binding(dynamicColor, { dynamicColor }, { new -> dynamicColor = new }).controller(::TickBoxController)
+            Option.createBuilder<Boolean>().name(Component.literal("Dynamic color"))
+                .description(OptionDescription.of(Component.literal("Decides whether the color of the biome component should change with the biome or not.")))
+                .binding(dynamicColor, { dynamicColor }, { new -> dynamicColor = new })
+                .controller { TickBoxControllerBuilder.create(it) }
                 .build()
         )
         return group.build()

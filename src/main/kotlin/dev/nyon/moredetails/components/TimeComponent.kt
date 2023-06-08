@@ -1,9 +1,9 @@
 package dev.nyon.moredetails.components
 
-import com.mojang.blaze3d.vertex.PoseStack
-import dev.isxander.yacl.api.Option
-import dev.isxander.yacl.api.OptionGroup
-import dev.isxander.yacl.gui.controllers.TickBoxController
+import dev.isxander.yacl3.api.Option
+import dev.isxander.yacl3.api.OptionDescription
+import dev.isxander.yacl3.api.OptionGroup
+import dev.isxander.yacl3.api.controller.TickBoxControllerBuilder
 import dev.nyon.moredetails.config.config
 import dev.nyon.moredetails.minecraft
 import dev.nyon.moredetails.util.assertMissingNull
@@ -12,7 +12,7 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
-import net.minecraft.client.gui.GuiComponent
+import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.Renderable
 import net.minecraft.network.chat.Component
 
@@ -42,13 +42,13 @@ class TimeComponent(
     @Transient
     private var widget: Renderable? = null
 
-    override fun update(poseStack: PoseStack) {
-        widget?.render(poseStack, 0, 0, 0F)
+    override fun update(matrices: GuiGraphics) {
+        widget?.render(matrices, 0, 0, 0F)
     }
 
 
     override fun register() {
-        widget = Renderable { poseStack, _, _, _ ->
+        widget = Renderable { matrices, _, _, _ ->
             val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
             val component = Component.literal(
                 format
@@ -60,30 +60,30 @@ class TimeComponent(
                     .replace("%second%", now.second.assertMissingNull())
                     .replace("%period%", if (now.hour > 12) "pm" else "am")
             )
-            renderBackground(poseStack, component, minecraft.font)
-            if (config.textShadow) GuiComponent.drawString(
-                poseStack,
+            renderBackground(matrices, component, minecraft.font)
+            matrices.drawString(
                 minecraft.font,
                 component,
                 x.toInt(),
                 y.toInt(),
-                color
+                color,
+                config.textShadow
             )
-            else minecraft.font.draw(poseStack, component, x.toFloat(), y.toFloat(), color)
         }
     }
 
     override fun createYACLGroup(group: OptionGroup.Builder): OptionGroup {
         group.collapsed(true)
         group.name(Component.literal(name))
-        group.tooltip(Component.literal("Configure the TimeComponent '$name'"))
+        group.description(OptionDescription.of(Component.literal("Configure the TimeComponent '$name'")))
         group.createDefaultOptions()
         group.option(
-            Option.createBuilder(Boolean::class.java)
+            Option.createBuilder<Boolean>()
                 .name(Component.literal("24h format"))
-                .tooltip(Component.literal("Decides whether the time should be displayed in 24 hour format or not."))
+                .description(OptionDescription.of(Component.literal("Decides whether the time should be displayed in 24 hour format or not.")))
                 .binding(twentyFourHourFormat, { twentyFourHourFormat }, { new -> twentyFourHourFormat = new })
-                .controller(::TickBoxController).build()
+                .controller { TickBoxControllerBuilder.create(it) }
+                .build()
         )
         return group.build()
     }

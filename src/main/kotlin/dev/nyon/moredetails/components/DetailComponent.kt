@@ -1,15 +1,15 @@
 package dev.nyon.moredetails.components
 
-import com.mojang.blaze3d.vertex.PoseStack
-import dev.isxander.yacl.api.Option
-import dev.isxander.yacl.api.OptionGroup
-import dev.isxander.yacl.gui.controllers.ColorController
-import dev.isxander.yacl.gui.controllers.TickBoxController
-import dev.isxander.yacl.gui.controllers.string.StringController
-import dev.isxander.yacl.gui.controllers.string.number.DoubleFieldController
+import dev.isxander.yacl3.api.Option
+import dev.isxander.yacl3.api.OptionDescription
+import dev.isxander.yacl3.api.OptionGroup
+import dev.isxander.yacl3.api.controller.ColorControllerBuilder
+import dev.isxander.yacl3.api.controller.DoubleFieldControllerBuilder
+import dev.isxander.yacl3.api.controller.StringControllerBuilder
+import dev.isxander.yacl3.api.controller.TickBoxControllerBuilder
 import kotlinx.serialization.Serializable
 import net.minecraft.client.gui.Font
-import net.minecraft.client.gui.GuiComponent
+import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.Style
 import java.awt.Color
@@ -27,7 +27,7 @@ sealed interface DetailComponent {
     val placeholders: Map<String, String>
     val example: Component
 
-    fun update(poseStack: PoseStack)
+    fun update(matrices: GuiGraphics)
 
     fun register()
     fun remove()
@@ -39,9 +39,8 @@ sealed interface DetailComponent {
         var decimalPlaces: Int
     }
 
-    fun renderBackground(poseStack: PoseStack, value: Component, font: Font) {
-        if (background) GuiComponent.fill(
-            poseStack,
+    fun renderBackground(matrices: GuiGraphics, value: Component, font: Font) {
+        if (background) matrices.fill(
             (x - 1).toInt(),
             (y - 1).toInt(),
             (x + font.width(value.string) + 1).toInt(),
@@ -52,54 +51,52 @@ sealed interface DetailComponent {
 
     fun OptionGroup.Builder.createDefaultOptions() {
         this.option(
-            Option.createBuilder(String::class.java).name(Component.literal("Name"))
-                .tooltip(Component.literal("Change the name of the component."))
-                .binding(name, { name }, { new -> name = new }).controller(::StringController).build()
+            Option.createBuilder<Boolean>().name(Component.literal("Enabled"))
+                .description(OptionDescription.of(Component.literal("Decides whether the component is displayed or not.")))
+                .binding(enabled, { enabled }, { new -> enabled = new })
+                .controller { TickBoxControllerBuilder.create(it) }.build()
         )
         this.option(
-            Option.createBuilder(Boolean::class.java).name(Component.literal("Enabled"))
-                .tooltip(Component.literal("Decides whether the component is displayed or not."))
-                .binding(enabled, { enabled }, { new -> enabled = new }).controller(::TickBoxController).build()
+            Option.createBuilder<Double>().name(Component.literal("X coordinate"))
+                .description(OptionDescription.of(Component.literal("Changes the x coordinate where the component is displayed. Suggested to modify via the reorder screen!")))
+                .binding(x, { x }, { new -> x = new }).controller { DoubleFieldControllerBuilder.create(it) }.build()
         )
         this.option(
-            Option.createBuilder(Double::class.java).name(Component.literal("X coordinate"))
-                .tooltip(Component.literal("Changes the x coordinate where the component is displayed. Suggested to modify via the reorder screen!"))
-                .binding(x, { x }, { new -> x = new }).controller(::DoubleFieldController).build()
+            Option.createBuilder<Double>().name(Component.literal("Y coordinate"))
+                .description(OptionDescription.of(Component.literal("Changes the y coordinate where the component is displayed. Suggested to modify via the reorder screen!")))
+                .binding(y, { y }, { new -> y = new }).controller { DoubleFieldControllerBuilder.create(it) }.build()
         )
         this.option(
-            Option.createBuilder(Double::class.java).name(Component.literal("Y coordinate"))
-                .tooltip(Component.literal("Changes the y coordinate where the component is displayed. Suggested to modify via the reorder screen!"))
-                .binding(y, { y }, { new -> y = new }).controller(::DoubleFieldController).build()
-        )
-        this.option(
-            Option.createBuilder(Color::class.java).name(Component.literal("Color"))
-                .tooltip(Component.literal("Changes the text color of the component."))
+            Option.createBuilder<Color>().name(Component.literal("Color"))
+                .description(OptionDescription.of(Component.literal("Changes the text color of the component.")))
                 .binding(Color(color), { Color(color) }, { new -> color = new.rgb })
-                .controller { ColorController(it, true) }
+                .controller { ColorControllerBuilder.create(it).allowAlpha(true) }
                 .build()
         )
         this.option(
-            Option.createBuilder(Boolean::class.java).name(Component.literal("Background"))
-                .tooltip(Component.literal("Decides whether the component should have a background or not."))
-                .binding(background, { background }, { new -> background = new }).controller(::TickBoxController)
+            Option.createBuilder<Boolean>().name(Component.literal("Background"))
+                .description(OptionDescription.of(Component.literal("Decides whether the component should have a background or not.")))
+                .binding(background, { background }, { new -> background = new })
+                .controller { TickBoxControllerBuilder.create(it) }
                 .build()
         )
         this.option(
-            Option.createBuilder(Color::class.java).name(Component.literal("Background color"))
-                .tooltip(Component.literal("Changes the background color of the component."))
+            Option.createBuilder<Color>().name(Component.literal("Background color"))
+                .description(OptionDescription.of(Component.literal("Changes the background color of the component.")))
                 .binding(Color(backgroundColor), { Color(backgroundColor) }, { new -> backgroundColor = new.rgb })
-                .controller { ColorController(it, true) }.build()
+                .controller { ColorControllerBuilder.create(it).allowAlpha(true) }.build()
         )
         this.option(
-            Option.createBuilder(String::class.java).name(Component.literal("Format"))
-                .tooltip(Component.literal("Changes the format of the component.").apply {
+            Option.createBuilder<String>().name(Component.literal("Format"))
+                .description(OptionDescription.of(Component.literal("Changes the format of the component.").apply {
                     placeholders.forEach { (placeholder, description) ->
                         append(Component.literal("\n - "))
                         append(Component.literal(placeholder).withStyle(Style.EMPTY.withColor(0xA1A0AC)))
                         append(Component.literal("  $description").withStyle(Style.EMPTY.withColor(0x75747E)))
                     }
-                })
-                .binding(format, { format }, { new -> format = new }).controller(::StringController).build()
+                }))
+                .binding(format, { format }, { new -> format = new }).controller { StringControllerBuilder.create(it) }
+                .build()
         )
     }
 }

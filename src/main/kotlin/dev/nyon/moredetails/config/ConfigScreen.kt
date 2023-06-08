@@ -1,8 +1,7 @@
 package dev.nyon.moredetails.config
 
-import dev.isxander.yacl.api.*
-import dev.isxander.yacl.gui.controllers.ActionController
-import dev.isxander.yacl.gui.controllers.TickBoxController
+import dev.isxander.yacl3.api.*
+import dev.isxander.yacl3.api.controller.TickBoxControllerBuilder
 import dev.nyon.moredetails.components.reorder.ReorderScreen
 import dev.nyon.moredetails.minecraft
 import net.minecraft.client.gui.screens.Screen
@@ -30,13 +29,12 @@ fun YetAnotherConfigLib.Builder.appendComponentsCategory(): YetAnotherConfigLib.
             .option(
                 ButtonOption.createBuilder()
                     .name(Component.literal("Reorder components"))
-                    .tooltip(Component.literal("Opens a screen to reorder the components."))
+                    .description(OptionDescription.of(Component.literal("Opens a screen to reorder the components.")))
                     .action { screen, _ ->
                         minecraft.setScreen(ReorderScreen(null))
                         screen.config.saveFunction()
                     }
                     .available(minecraft.currentServer != null || minecraft.isSingleplayer)
-                    .controller(::ActionController)
                     .build()
             )
             .groups(config.components.map { it.createYACLGroup(OptionGroup.createBuilder()) }).build()
@@ -49,10 +47,10 @@ fun YetAnotherConfigLib.Builder.appendAccessibilityCategory(): YetAnotherConfigL
         ConfigCategory.createBuilder().name(Component.literal("Accessibility"))
             .tooltip(Component.literal("Change accessibility settings"))
             .option(
-                Option.createBuilder(Boolean::class.java).name(Component.literal("Text shadow"))
-                    .tooltip(Component.literal("Decides whether the text should have a shadow or not."))
+                Option.createBuilder<Boolean>().name(Component.literal("Text shadow"))
+                    .description(OptionDescription.of(Component.literal("Decides whether the text should have a shadow or not.")))
                     .binding(config.textShadow, { config.textShadow }, { new -> config.textShadow = new })
-                    .controller(::TickBoxController).build()
+                    .controller { TickBoxControllerBuilder.create(it) }.build()
             ).build()
     )
     return this

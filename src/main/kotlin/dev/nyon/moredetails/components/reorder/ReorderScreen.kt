@@ -1,10 +1,9 @@
 package dev.nyon.moredetails.components.reorder
 
-import com.mojang.blaze3d.vertex.PoseStack
 import dev.nyon.moredetails.components.DetailComponent
 import dev.nyon.moredetails.config.config
 import dev.nyon.moredetails.config.saveConfig
-import net.minecraft.client.gui.GuiComponent
+import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
 import dev.nyon.moredetails.minecraft as mc
@@ -18,14 +17,13 @@ class ReorderScreen(private val parent: Screen?) : Screen(Component.literal("mor
         config.components.forEach { it.remove() }
     }
 
-    override fun render(poseStack: PoseStack, mouseX: Int, mouseY: Int, partialTick: Float) {
+    override fun render(matrices: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
         val enabledComponents = config.components.filter { it.enabled }
         enabledComponents.forEach { component ->
-            ComponentWidget(component, font).render(poseStack, mouseX, mouseY, partialTick)
+            ComponentWidget(component, font).render(matrices, mouseX, mouseY, partialTick)
         }
         if (enabledComponents.isEmpty())
-            GuiComponent.drawCenteredString(
-                poseStack,
+            matrices.drawCenteredString(
                 font,
                 Component.literal("No enabled components!"),
                 width / 2,
