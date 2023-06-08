@@ -2,12 +2,12 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.8.21"
-    kotlin("plugin.serialization") version "1.8.21"
+    kotlin("jvm") version "1.8.22"
+    kotlin("plugin.serialization") version "1.8.22"
     id("fabric-loom") version "1.2-SNAPSHOT"
-    id("io.github.juuxel.loom-quiltflower") version "1.8.0"
+    id("io.github.juuxel.loom-quiltflower") version "1.9.0"
 
-    id("com.modrinth.minotaur") version "2.7.5"
+    id("com.modrinth.minotaur") version "2.8.0"
     id("com.github.breadmoirai.github-release") version "2.4.1"
     `maven-publish`
     signing
@@ -15,7 +15,7 @@ plugins {
 
 group = "dev.nyon"
 val majorVersion = "1.0.1"
-val mcVersion = "1.19.4"
+val mcVersion = "1.20"
 version = "$majorVersion-$mcVersion"
 description = "Adds useful information to your ingame hud"
 val authors = listOf("btwonion")
@@ -34,12 +34,12 @@ dependencies {
         parchment("org.parchmentmc.data:parchment-1.19.3:2023.03.12@zip")
         officialMojangMappings()
     })
-    modImplementation("net.fabricmc:fabric-loader:0.14.19")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:0.79.0+1.19.4")
+    modImplementation("net.fabricmc:fabric-loader:0.14.21")
+    modImplementation("net.fabricmc.fabric-api:fabric-api:0.83.0+$mcVersion")
     modImplementation("net.fabricmc:fabric-language-kotlin:1.9.4+kotlin.1.8.21")
-    modImplementation("dev.isxander.yacl:yet-another-config-lib-fabric:2.5.0+1.19.4")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
-    modApi("com.terraformersmc:modmenu:6.2.0")
+    modImplementation("dev.isxander.yacl:yet-another-config-lib-fabric:3.0.1+$mcVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
+    modApi("com.terraformersmc:modmenu:7.0.0")
 }
 
 tasks {
@@ -49,7 +49,6 @@ tasks {
         val modDescription = "Adds useful information to your ingame hud"
 
         inputs.property("id", modId)
-        inputs.property("group", project.group)
         inputs.property("name", modName)
         inputs.property("description", modDescription)
         inputs.property("version", project.version)
@@ -58,7 +57,6 @@ tasks {
         filesMatching("fabric.mod.json") {
             expand(
                 "id" to modId,
-                "group" to project.group,
                 "name" to modName,
                 "description" to modDescription,
                 "version" to project.version,
@@ -77,7 +75,7 @@ tasks {
     }
 }
 val changelogText =
-    file("changelogs/$majorVersion.md").takeIf { it.exists() }?.readText() ?: "No changelog provided."
+    file("changelogs/$version.md").takeIf { it.exists() }?.readText() ?: "No changelog provided."
 
 modrinth {
     token.set(findProperty("modrinth.token")?.toString())
