@@ -17,9 +17,11 @@ All the components are highly customizable in coloring, formatting and placing.
 
 ## Keybindings
 
-- `i` opens the reorder overlay, where you can reorder your components
+- `i` opens the reorder overlay, where you can reorder your components through dragging
 - `u` opens the config screen
 
 ### Other
+⚠️ The development version is always the latest stable release of minecraft. 
+Therefore new features will only be available for the current and following minecraft versions.
 
 If you need help with any of my mods just join my [discord server](https://nyon.dev/discord)
