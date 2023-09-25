@@ -5,6 +5,8 @@
 This mod aims to provide all the information you need on your ingame hud.
 All the components are highly customizable in coloring, formatting and placing.
 
+## !!! Archived in favor of https://modrinth.com/mod/customhud and my lack of time.
+
 ## Current components
 
 - FPS
